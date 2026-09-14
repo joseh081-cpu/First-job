@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1c1917" />
+  <title>Fold — Smart Budget</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div>
+        <p class="eyebrow">Fold</p>
+        <h1>Smart budget</h1>
+      </div>
+      <button class="ghost" id="exportBtn" type="button">Backup</button>
+    </header>
+    <section class="hero cards">
+      <article class="stat">
+        <span>This month left</span>
+        <strong id="leftThisMonth">$0.00</strong>
+        <small id="flowLabel">Income − expenses</small>
+      </article>
+      <article class="stat">
+        <span>All accounts</span>
+        <strong id="netTotal">$0.00</strong>
+        <small id="accountCount">0 accounts</small>
+      </article>
+    </section>
+    <nav class="tabs" role="tablist">
+      <button class="tab on" data-tab="home" type="button">Home</button>
+      <button class="tab" data-tab="tx" type="button">Activity</button>
+      <button class="tab" data-tab="accounts" type="button">Accounts</button>
+      <button class="tab" data-tab="budgets" type="button">Budgets</button>
+    </nav>
+    <main id="panel-home" class="panel on">
+      <div class="row-head">
+        <h2>This month</h2>
+        <select id="monthPick"></select>
+      </div>
+      <div class="bars">
+        <div class="bar-row"><span>Income</span><div class="track"><i id="incBar"></i></div><b id="incAmt">$0</b></div>
+        <div class="bar-row"><span>Spent</span><div class="track spend"><i id="expBar"></i></div><b id="expAmt">$0</b></div>
+      </div>
+      <h3>Categories</h3>
+      <ul id="catBreakdown" class="list"></ul>
+      <h3>Recent</h3>
+      <ul id="recentList" class="list"></ul>
+    </main>
+    <main id="panel-tx" class="panel">
+      <form id="txForm" class="card form">
+        <h2>Add transaction</h2>
+        <div class="seg" role="group">
+          <label><input type="radio" name="kind" value="expense" checked /> Expense</label>
+          <label><input type="radio" name="kind" value="income" /> Income</label>
+          <label><input type="radio" name="kind" value="transfer" /> Transfer</label>
+        </div>
+        <label>Amount<input name="amount" type="number" inputmode="decimal" step="0.01" min="0" required placeholder="0.00" /></label>
+        <label>Account<select name="accountId" required></select></label>
+        <label class="transfer-only hidden">To account<select name="toAccountId"></select></label>
+        <label class="not-transfer">Category<select name="category"></select></label>
+        <label>Note<input name="note" maxlength="80" placeholder="Optional" /></label>
+        <label>Date<input name="date" type="date" required /></label>
+        <button type="submit">Save</button>
+      </form>
+      <ul id="txList" class="list"></ul>
+    </main>
+    <main id="panel-accounts" class="panel">
+      <form id="acctForm" class="card form">
+        <h2>Add account</h2>
+        <label>Name<input name="name" required maxlength="40" placeholder="Checking, Cash, Visa" /></label>
+        <label>Type<select name="type">
+          <option value="checking">Checking</option>
+          <option value="savings">Savings</option>
+          <option value="credit">Credit card</option>
+          <option value="cash">Cash</option>
+          <option value="other">Other</option>
+        </select></label>
+        <label>Starting balance<input name="balance" type="number" inputmode="decimal" step="0.01" value="0" /></label>
+        <p class="hint">Credit cards: enter what you owe. Fold treats credit as money owed.</p>
+        <button type="submit">Add account</button>
+      </form>
+      <ul id="acctList" class="list"></ul>
+    </main>
+    <main id="panel-budgets" class="panel">
+      <form id="budgetForm" class="card form">
+        <h2>Monthly budget</h2>
+        <label>Category<select name="category"></select></label>
+        <label>Limit<input name="limit" type="number" inputmode="decimal" step="0.01" min="0" required placeholder="400" /></label>
+        <button type="submit">Set limit</button>
+      </form>
+      <ul id="budgetList" class="list"></ul>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
