@@ -10,7 +10,7 @@
   --coral: #e08b73;
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 html, body {
   margin: 0;
@@ -18,17 +18,28 @@ html, body {
   background: #07080a;
   color: var(--ink);
   font-family: "DM Sans", system-ui, sans-serif;
+  overscroll-behavior-y: none;
+}
+
+body {
+  -webkit-text-size-adjust: 100%;
+  touch-action: manipulation;
 }
 
 .phone {
   max-width: 430px;
   margin: 0 auto;
   min-height: 100dvh;
+  min-height: -webkit-fill-available;
   background:
     radial-gradient(1000px 420px at 18% -8%, #1b2420 0%, transparent 55%),
     radial-gradient(700px 360px at 100% 12%, rgba(226, 196, 138, 0.08), transparent 50%),
     var(--bg);
-  padding: 18px 16px calc(110px + env(safe-area-inset-bottom, 0px));
+  padding:
+    calc(18px + env(safe-area-inset-top, 0px))
+    max(16px, env(safe-area-inset-right, 0px))
+    calc(110px + env(safe-area-inset-bottom, 0px))
+    max(16px, env(safe-area-inset-left, 0px));
 }
 
 .topbar {

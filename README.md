@@ -1,12 +1,17 @@
 # Fold Agent
 
-A month-to-month budgeting agent that lives in your browser.
+A month-to-month budgeting agent that lives in your browser — including **iPhone Safari**.
 
 Track every expense, set category limits, and get coaching on pace, leftover cash, and how this month compares to the last.
 
-## Open it
+## Open on iPhone
 
-Open `index.html` on your phone or laptop, or use the GitHub Pages deploy from `main`.
+1. Merge this app to `main` and turn on **GitHub Pages** (Settings → Pages → Source: **GitHub Actions**).
+2. After the deploy workflow finishes, open:
+   `https://joseh081-cpu.github.io/First-job/`
+3. In Safari: **Share → Add to Home Screen** for a full-screen Fold icon (works offline for your saved data once loaded).
+
+Until Pages is on, open `index.html` from a Mac with AirDrop / Files, or host the folder on any static URL and open that link in Safari.
 
 ## What it does
 
