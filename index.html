@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0b0d10" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <title>Fold</title>
+  <meta name="description" content="Fold Agent — month-to-month budgeting and expense tracking that stays on your device." />
+  <title>Fold Agent</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
@@ -15,18 +16,23 @@
   <div class="phone">
     <header class="topbar">
       <div>
-        <p class="brand">Fold</p>
+        <p class="brand">Fold Agent</p>
         <h1 id="greet">Your money</h1>
       </div>
       <div class="top-actions">
+        <button class="icon-btn" id="importBtn" type="button" title="Restore backup">↑</button>
         <button class="icon-btn" id="exportBtn" type="button" title="Backup">↓</button>
-        <button class="icon-btn" id="monthBtn" type="button"><span id="monthLabel">Sep</span></button>
+        <button class="icon-btn month-nav" id="prevMonth" type="button" aria-label="Previous month">‹</button>
+        <button class="icon-btn" id="monthBtn" type="button"><span id="monthLabel">Oct</span></button>
+        <button class="icon-btn month-nav" id="nextMonth" type="button" aria-label="Next month">›</button>
       </div>
     </header>
     <select id="monthPick" class="sr-only" aria-label="Month"></select>
+    <input id="importFile" class="sr-only" type="file" accept="application/json,.json" />
+
     <section id="view-home" class="view on">
       <article class="balance-card">
-        <p>Available this month</p>
+        <p>Left to spend this month</p>
         <h2 id="leftThisMonth">$0.00</h2>
         <div class="flow">
           <span class="pill in" id="incAmt">+$0</span>
@@ -34,22 +40,62 @@
         </div>
         <div class="split"><i id="incBar"></i></div>
         <small id="flowLabel">Add a paycheck to start</small>
+        <div class="mom" id="momStrip" hidden>
+          <span id="momSpend">vs last month</span>
+          <span id="momPace">Pace</span>
+        </div>
       </article>
+
+      <article class="agent-card" id="agentTeaser" data-go="agent">
+        <div class="agent-badge">Agent</div>
+        <p id="agentTeaserText">I’ll watch your month and nudge you when spending drifts.</p>
+        <button class="text-btn" type="button">Open coach →</button>
+      </article>
+
       <div class="section-row"><h3>Accounts</h3><button class="text-btn" data-go="accounts" type="button">Manage</button></div>
       <div id="acctStrip" class="strip"></div>
-      <div class="section-row"><h3>Spending</h3></div>
+
+      <div class="section-row"><h3>Spending</h3><button class="text-btn" data-go="budgets" type="button">Limits</button></div>
       <ul id="catBreakdown" class="stack"></ul>
+
       <div class="section-row"><h3>Recent</h3><button class="text-btn" data-go="tx" type="button">See all</button></div>
       <ul id="recentList" class="stack"></ul>
     </section>
+
     <section id="view-tx" class="view">
+      <div class="search-wrap">
+        <input id="txSearch" type="search" placeholder="Search every expense…" autocomplete="off" />
+      </div>
       <div class="filter-row">
         <button class="chip on" data-filter="all" type="button">All</button>
         <button class="chip" data-filter="expense" type="button">Out</button>
         <button class="chip" data-filter="income" type="button">In</button>
+        <button class="chip" data-filter="transfer" type="button">Moves</button>
       </div>
+      <label class="check-row">
+        <input type="checkbox" id="monthOnly" checked />
+        <span>Only selected month</span>
+      </label>
       <ul id="txList" class="stack"></ul>
     </section>
+
+    <section id="view-agent" class="view">
+      <article class="agent-hero">
+        <p class="agent-badge">Your budget coach</p>
+        <h2 id="agentHeadline">Let’s map this month</h2>
+        <p id="agentSummary">Log income and spending — I’ll compare months, watch limits, and keep you paced.</p>
+      </article>
+      <div class="stat-grid" id="agentStats"></div>
+      <div class="section-row"><h3>Insights</h3></div>
+      <ul id="insightList" class="stack insights"></ul>
+      <div class="section-row"><h3>Quick actions</h3></div>
+      <div class="action-grid">
+        <button class="action-btn" id="copyBudgetsBtn" type="button">Copy last month’s limits</button>
+        <button class="action-btn" data-go="budgets" type="button">Set category caps</button>
+        <button class="action-btn" id="seedDemoBtn" type="button">Load sample month</button>
+      </div>
+    </section>
+
     <section id="view-accounts" class="view">
       <form id="acctForm" class="sheet-form">
         <h3>New account</h3>
@@ -66,9 +112,10 @@
         </div>
         <button class="primary" type="submit">Add account</button>
       </form>
-      <p class="hint">Credit cards count as money you owe.</p>
+      <p class="hint">Credit cards count as money you owe. Starting balance is your opening amount.</p>
       <ul id="acctList" class="stack"></ul>
     </section>
+
     <section id="view-budgets" class="view">
       <form id="budgetForm" class="sheet-form">
         <h3>Monthly limit</h3>
@@ -78,20 +125,24 @@
         </div>
         <button class="primary" type="submit">Save limit</button>
       </form>
+      <p class="hint">Limits reset each calendar month. The agent warns you when a category runs hot.</p>
       <ul id="budgetList" class="stack"></ul>
     </section>
-    <button class="fab" id="fab" type="button">+</button>
+
+    <button class="fab" id="fab" type="button" aria-label="Add transaction">+</button>
     <nav class="dock">
       <button class="dock-btn on" data-view="home" type="button">Home</button>
-      <button class="dock-btn" data-view="tx" type="button">Activity</button>
-      <button class="dock-btn" data-view="accounts" type="button">Wallets</button>
+      <button class="dock-btn" data-view="tx" type="button">Track</button>
+      <button class="dock-btn" data-view="agent" type="button">Agent</button>
       <button class="dock-btn" data-view="budgets" type="button">Plans</button>
     </nav>
   </div>
+
   <div class="overlay" id="overlay" hidden>
     <form id="txForm" class="modal">
       <div class="grab"></div>
-      <h2>New entry</h2>
+      <h2 id="txModalTitle">New entry</h2>
+      <input type="hidden" name="editId" value="" />
       <div class="seg">
         <label class="on"><input type="radio" name="kind" value="expense" checked /> Spend</label>
         <label><input type="radio" name="kind" value="income" /> Income</label>
@@ -101,7 +152,7 @@
       <select name="accountId" required></select>
       <select name="toAccountId" class="transfer-only hidden"></select>
       <select name="category" class="not-transfer"></select>
-      <input name="note" maxlength="80" placeholder="What's this for?" />
+      <input name="note" maxlength="80" placeholder="What’s this for?" />
       <input name="date" type="date" required />
       <div class="modal-actions">
         <button class="ghost" id="closeModal" type="button">Cancel</button>
