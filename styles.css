@@ -584,6 +584,10 @@ input, select {
   z-index: 30;
 }
 
+.overlay[hidden] {
+  display: none !important;
+}
+
 .modal {
   width: min(430px, 100%);
   border-radius: 28px 28px 0 0;
