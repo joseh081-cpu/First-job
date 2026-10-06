@@ -520,7 +520,6 @@ function loadSampleMonth() {
   };
   if (!state.accounts.find((a) => a.id === checking.id)) state.accounts.push(checking);
   const ym = currentMonth();
-  const [y, m] = ym.split("-");
   const d = (n) => `${ym}-${String(n).padStart(2, "0")}`;
   const demo = [
     { kind: "income", amount: 3200, category: "Paycheck", note: "Biweekly pay", date: d(1) },
@@ -558,7 +557,6 @@ function loadSampleMonth() {
     { id: uid(), kind: "expense", amount: 210, category: "Groceries", note: "Food", date: pd(10), accountId: checking.id, toAccountId: null, created: new Date().toISOString() },
     { id: uid(), kind: "expense", amount: 90, category: "Gas", note: "Fuel", date: pd(14), accountId: checking.id, toAccountId: null, created: new Date().toISOString() },
   );
-  void y; void m;
   save();
   renderAll();
   showView("home");
